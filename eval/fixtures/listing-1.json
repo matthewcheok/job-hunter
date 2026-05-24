@@ -1,0 +1,19 @@
+{
+  "expected": {
+    "position": "Applied AI Engineer for Internal Tools",
+    "company_name": "AI&",
+    "about_role": "Build AI-powered systems and agentic workflows that AI& runs on internally. The role works across engineering, finance, operations, data center, and HR to remove friction, automate manual work, deploy agents, integrate AI& models and infrastructure into internal workflows, and make teams more productive.",
+    "about_company": "AI& is a vertically integrated AI platform from Japan for the global market. The company recently launched with $50M in seed funding and more than $2B in committed infrastructure capital.",
+    "responsibilities": "Design and build AI-powered internal tools; identify manual, repetitive, or slow internal processes and replace them with agentic AI workflows; integrate AI& models and inference infrastructure into internal tooling; work with every team to assess needs and prioritize high-impact AI interventions; build evaluation frameworks; document tools and run demos or onboarding.",
+    "requirements": "Production applied AI engineering experience; full-stack competence across backend services, APIs, and simple frontend interfaces; hands-on agentic framework and tool-use experience; cross-functional empathy; bias for impact; great team spirit and clear communication.",
+    "notes": "Location: Yokohama, Kanagawa; high-impact internal tools role; primary listing does not state salary, remote policy, employment type, or language requirements."
+  },
+  "checks": {
+    "about_role": ["AI-powered systems", "agentic workflows", "internal"],
+    "about_company": ["vertically integrated AI platform", "$50M", "$2B"],
+    "responsibilities": ["internal tools", "agentic AI workflows", "evaluation frameworks"],
+    "requirements": ["Applied AI", "Full-Stack", "Agentic"],
+    "notes": ["Yokohama", "Kanagawa"]
+  },
+  "blocked_phrases": ["Money Forward", "KATIX", "TableCheck", "NaLaLys"]
+}

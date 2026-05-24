@@ -2,8 +2,10 @@
 node_modules/
 out/
 build/
+*.tsbuildinfo
 .env*.local
 .env
+extracted/*.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

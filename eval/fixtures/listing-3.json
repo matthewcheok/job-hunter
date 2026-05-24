@@ -1,0 +1,19 @@
+{
+  "expected": {
+    "position": "Engineering Manager",
+    "company_name": "PayPay Card",
+    "about_role": "PayPay Card is looking for Engineering Managers with Japanese conversational abilities to help internationalize engineering divisions, improve technical architecture, and bridge language and cultural communication between English-speaking engineers and Japanese-speaking stakeholders.",
+    "about_company": "PayPay Card Corporation was established in 2021 to provide a more accessible and convenient FinTech service integrated with the PayPay payment platform, which has surpassed 70 million users as of July 2025. The company wants people passionate about refining products quickly and promoting cashless payments in Japan.",
+    "responsibilities": "Lead a Web Backend engineering team; support timely and high-quality delivery; assign team members to suitable projects; unblock team members; coordinate, negotiate, or arbitrate with stakeholders in Japanese when needed; identify and address process, tooling, system, delivery, reliability, and developer experience pain points; enhance development processes; support people growth, 1:1s, employee lifecycle, interviews, and technical roadmap work.",
+    "requirements": "At least 2 years leading web application engineering teams; past software engineering experience in backend or frontend; proven contributions to scalable architectures and system designs; task definition and breakdown skills; stakeholder management, coordination, and conflict handling; business-level English; conversational Japanese; people growth focus; follow-up on progress and blockers; continuous improvement and developer experience mindset; interviewing experience. Preferred: security awareness, domain-driven development, PCI-DSS credit card industry experience, meeting facilitation, engineering excellence, observability, and diversity and inclusion ethics.",
+    "notes": "Hybrid; office location uses a flexible style including remote and office; full-time; working hours are full flex with no core time, generally 9:00am-5:45pm with 7h45m work plus 1h break; salary paid annually in 12 installments, reviewed yearly, with special incentive, overtime allowances, and commuting expenses; benefits include social insurance and 401K."
+  },
+  "checks": {
+    "about_role": ["Engineering Managers", "Japanese", "stakeholders"],
+    "about_company": ["2021", "FinTech", "70 million"],
+    "responsibilities": ["Web Backend", "stakeholders", "developer experience"],
+    "requirements": ["2 years", "business level English", "conversational Japanese"],
+    "notes": ["Hybrid", "Full Time", "Full Flex Time", "401K"]
+  },
+  "blocked_phrases": ["Afghanistan", "Åland Islands", "Apply for this job"]
+}

@@ -1,0 +1,16 @@
+{
+  "expected": {
+    "position": "Principal AI Engineer (Founding Engineer)",
+    "company_name": "Rakuda AI",
+    "about_role": "",
+    "about_company": "Rakuda AI is a Tokyo-based product studio that designs, builds, and operates AI-powered web applications, e-commerce platforms, and business-process automation systems. The team handles frontend, backend, infrastructure, and LLM integration in-house without external subcontracting, and specializes in production-grade AI products on aggressive timelines.",
+    "responsibilities": "",
+    "requirements": "",
+    "notes": "Location: Tokyo; company size: 1-10; salary shown as unknown in the header and as ¥30M or more in the job card; Japanese Required; company page is unverified; international support includes visa sponsorship, flight ticket, temporary housing, apartment help, moving expense support, and lifestyle support; benefits include stock options, new tech gear, book purchases, and health/social insurance."
+  },
+  "checks": {
+    "about_company": ["Tokyo-based product studio", "AI-powered web applications", "LLM integration"],
+    "notes": ["Tokyo", "¥30M", "Japanese Required", "visa"]
+  },
+  "blocked_phrases": ["abbeal", "Money Forward", "LY Corporation", "Mujin", "Mico", "Latest Tech Jobs"]
+}

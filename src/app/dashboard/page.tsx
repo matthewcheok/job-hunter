@@ -9,6 +9,7 @@ import {
   type ApplicationWithCurrentStatus,
   type JobApplication,
   type StatusHistory,
+  type UserResume,
 } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,20 @@ export default async function DashboardPage() {
     throw new Error(historyError.message);
   }
 
+  const { data: resume, error: resumeError } = await supabase
+    .from("user_resumes")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (resumeError) {
+    if (isMissingSchemaError(resumeError.message)) {
+      return <DatabaseSetupRequired />;
+    }
+
+    throw new Error(resumeError.message);
+  }
+
   const applicationsWithStatus = mergeApplicationsWithHistory(
     applications ?? [],
     history ?? [],
@@ -76,7 +91,10 @@ export default async function DashboardPage() {
         />
       </header>
 
-      <ApplicationDashboard applications={applicationsWithStatus} />
+      <ApplicationDashboard
+        applications={applicationsWithStatus}
+        resume={resume as UserResume | null}
+      />
     </main>
   );
 }

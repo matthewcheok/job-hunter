@@ -4,9 +4,13 @@ import { Redis } from "@upstash/redis";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { generateCoverLetter as generateCoverLetterText } from "@/lib/cover-letter";
 import { createClient } from "@/lib/supabase/server";
 import { processJobExtractionUrl } from "@/lib/job-extraction-url";
 import { isApplicationStatus, normalizeOptionalUrl, requiredText } from "@/lib/validation";
+
+const RESUME_BUCKET = "resumes";
+const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 
 async function requireUser() {
   const supabase = await createClient();
@@ -165,6 +169,200 @@ export async function updateApplicationField(formData: FormData) {
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function uploadResume(formData: FormData) {
+  const { supabase, user } = await requireUser();
+  const file = formData.get("resume");
+
+  if (!(file instanceof File)) {
+    throw new Error("Choose a PDF resume to upload.");
+  }
+
+  if (file.type !== "application/pdf") {
+    throw new Error("Resume must be a PDF.");
+  }
+
+  if (file.size > MAX_RESUME_BYTES) {
+    throw new Error("Resume PDF must be 10 MB or smaller.");
+  }
+
+  const storagePath = `${user.id}/resume.pdf`;
+  const { error: uploadError } = await supabase.storage
+    .from(RESUME_BUCKET)
+    .upload(storagePath, file, {
+      cacheControl: "3600",
+      contentType: "application/pdf",
+      upsert: true,
+    });
+
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  const { error } = await supabase.from("user_resumes").upsert({
+    user_id: user.id,
+    storage_path: storagePath,
+    original_filename: file.name,
+    mime_type: file.type,
+    size_bytes: file.size,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/dashboard");
+
+  return {
+    original_filename: file.name,
+    size_bytes: file.size,
+  };
+}
+
+export async function generateCoverLetter(formData: FormData) {
+  return saveGeneratedCoverLetter(formData, "generate");
+}
+
+export async function refineCoverLetter(formData: FormData) {
+  const mode = requiredText(formData, "mode", "Refinement mode");
+
+  if (mode !== "concise" && mode !== "detailed" && mode !== "custom") {
+    throw new Error("Choose a valid refinement mode.");
+  }
+
+  return saveGeneratedCoverLetter(formData, mode);
+}
+
+export async function updateCoverLetter(formData: FormData) {
+  const { supabase, user } = await requireUser();
+  const id = requiredText(formData, "id", "Application");
+  const coverLetter = String(formData.get("cover_letter") ?? "").trim();
+
+  const { error } = await supabase
+    .from("applications")
+    .update({ cover_letter: coverLetter })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/dashboard");
+
+  return { cover_letter: coverLetter };
+}
+
+async function saveGeneratedCoverLetter(
+  formData: FormData,
+  mode: "generate" | "concise" | "detailed" | "custom",
+) {
+  const { supabase, user } = await requireUser();
+  const application = await getApplicationForCoverLetter(
+    supabase,
+    user.id,
+    requiredText(formData, "id", "Application"),
+  );
+  const resume = await getResumePdfForUser(supabase, user.id);
+  const instruction = String(formData.get("instruction") ?? "").trim();
+  const paragraphIndex = getOptionalParagraphIndex(formData.get("paragraph_index"));
+  const existingCoverLetter = String(
+    formData.get("cover_letter") ?? application.cover_letter ?? "",
+  ).trim();
+
+  if (mode === "custom" && !instruction) {
+    throw new Error("Enter an instruction to refine the cover letter.");
+  }
+
+  if (mode !== "generate" && !existingCoverLetter) {
+    throw new Error("Generate a cover letter before refining it.");
+  }
+
+  const coverLetter = await generateCoverLetterText({
+    application,
+    existingCoverLetter,
+    instruction,
+    mode,
+    paragraphIndex,
+    resume,
+  });
+
+  const { error } = await supabase
+    .from("applications")
+    .update({ cover_letter: coverLetter })
+    .eq("id", application.id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/dashboard");
+
+  return { cover_letter: coverLetter };
+}
+
+async function getApplicationForCoverLetter(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  id: string,
+) {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", userId)
+    .single();
+
+  if (error || !data) {
+    throw new Error("Application not found.");
+  }
+
+  return data;
+}
+
+async function getResumePdfForUser(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+) {
+  const { data: resume, error: resumeError } = await supabase
+    .from("user_resumes")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (resumeError || !resume) {
+    throw new Error("Upload a PDF resume before generating a cover letter.");
+  }
+
+  const { data, error } = await supabase.storage
+    .from(RESUME_BUCKET)
+    .download(resume.storage_path);
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Unable to read the saved resume.");
+  }
+
+  return {
+    kind: "pdf" as const,
+    data: await data.arrayBuffer(),
+    mimeType: resume.mime_type,
+  };
+}
+
+function getOptionalParagraphIndex(value: FormDataEntryValue | null) {
+  if (value === null || value === "") {
+    return undefined;
+  }
+
+  const index = Number(value);
+
+  if (!Number.isInteger(index) || index < 0) {
+    throw new Error("Choose a valid paragraph.");
+  }
+
+  return index;
 }
 
 function getApplicationFieldUpdate(

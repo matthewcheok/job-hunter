@@ -5,7 +5,10 @@ import { FilePlus2, Search } from "lucide-react";
 import { ApplicationDetailPane } from "@/components/application-detail-pane";
 import { ApplicationTable } from "@/components/application-table";
 import { NewApplicationForm } from "@/components/new-application-form";
-import { type ApplicationWithCurrentStatus } from "@/lib/types";
+import {
+  type ApplicationWithCurrentStatus,
+  type UserResume,
+} from "@/lib/types";
 
 type PaneState =
   | { mode: "new" }
@@ -14,8 +17,10 @@ type PaneState =
 
 export function ApplicationDashboard({
   applications,
+  resume,
 }: {
   applications: ApplicationWithCurrentStatus[];
+  resume: UserResume | null;
 }) {
   const [pane, setPane] = useState<PaneState>(null);
   const [query, setQuery] = useState("");
@@ -121,6 +126,7 @@ export function ApplicationDashboard({
             <ApplicationDetailPane
               application={selectedApplication}
               key={selectedApplication.id}
+              resume={resume}
             />
           ) : null}
         </aside>

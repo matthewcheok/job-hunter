@@ -1,9 +1,15 @@
+"use client";
+
+import { useState } from "react";
+import { FileText, ScrollText } from "lucide-react";
 import { ApplicationEditForm } from "@/components/application-edit-form";
+import { CoverLetterTab } from "@/components/cover-letter-tab";
 import { DeleteApplicationForm } from "@/components/delete-application-form";
 import { StatusSelectForm } from "@/components/status-select-form";
 import {
   type ApplicationStatus,
   type ApplicationWithCurrentStatus,
+  type UserResume,
 } from "@/lib/types";
 
 const STATUS_LABELS: Record<ApplicationStatus, string> = {
@@ -14,6 +20,51 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
 };
 
 export function ApplicationDetailPane({
+  application,
+  resume,
+}: {
+  application: ApplicationWithCurrentStatus;
+  resume: UserResume | null;
+}) {
+  const [activeTab, setActiveTab] = useState<"details" | "cover-letter">(
+    "details",
+  );
+
+  return (
+    <>
+      <div className="pane-tabs" role="tablist" aria-label="Application sections">
+        <button
+          aria-selected={activeTab === "details"}
+          className="pane-tab"
+          onClick={() => setActiveTab("details")}
+          role="tab"
+          type="button"
+        >
+          <ScrollText aria-hidden="true" size={16} />
+          Details
+        </button>
+        <button
+          aria-selected={activeTab === "cover-letter"}
+          className="pane-tab"
+          onClick={() => setActiveTab("cover-letter")}
+          role="tab"
+          type="button"
+        >
+          <FileText aria-hidden="true" size={16} />
+          Cover Letter
+        </button>
+      </div>
+
+      {activeTab === "details" ? (
+        <DetailsTab application={application} />
+      ) : (
+        <CoverLetterTab application={application} resume={resume} />
+      )}
+    </>
+  );
+}
+
+function DetailsTab({
   application,
 }: {
   application: ApplicationWithCurrentStatus;

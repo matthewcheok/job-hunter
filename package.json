@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "extract:job": "tsx scripts/extract-job.ts",
+    "generate:cover-letter": "tsx scripts/generate-cover-letter.ts",
     "eval:extraction": "tsx scripts/eval-extraction.ts",
     "test:job-extraction-api": "tsx scripts/test-job-extraction-api.ts"
   },

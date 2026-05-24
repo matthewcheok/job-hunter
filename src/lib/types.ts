@@ -18,6 +18,7 @@ export type JobApplication = {
   about_company: string;
   responsibilities: string;
   requirements: string;
+  cover_letter: string;
   created_at: string;
   updated_at: string;
 };
@@ -44,4 +45,14 @@ export type ApplicationFormInput = {
   about_company?: string;
   responsibilities?: string;
   requirements?: string;
+};
+
+export type UserResume = {
+  user_id: string;
+  storage_path: string;
+  original_filename: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
+  updated_at: string;
 };

@@ -203,7 +203,9 @@ export async function scrapeJobListingMarkdown(
       body: JSON.stringify({
         url,
         formats: ["markdown"],
-        onlyMainContent: true,
+        onlyMainContent: false,
+        maxAge: 0,
+        waitFor: 3000,
       }),
     });
   } catch {

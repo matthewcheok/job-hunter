@@ -1,10 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export const DEFAULT_MODEL = "gemini-2.5-flash-lite";
-export const DEFAULT_PROMPT_PATH = new URL(
-  "../../prompts/job-extraction.md",
-  import.meta.url,
+export const DEFAULT_PROMPT_PATH = path.join(
+  process.cwd(),
+  "prompts",
+  "job-extraction.md",
 );
 
 export type JobExtraction = {
@@ -48,12 +50,12 @@ export const jobExtractionSchema = {
     responsibilities: {
       type: "string",
       description:
-        "Responsibilities, ownership areas, day-to-day duties, and expected outcomes.",
+        "Responsibilities, ownership areas, day-to-day duties, and expected outcomes. Prefer markdown bullets with one responsibility per line.",
     },
     requirements: {
       type: "string",
       description:
-        "Required and preferred qualifications, experience, skills, tools, and languages.",
+        "Required and preferred qualifications, experience, skills, tools, and languages. Prefer markdown bullets with one requirement per line.",
     },
     notes: {
       type: "string",

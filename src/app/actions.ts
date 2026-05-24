@@ -1,9 +1,11 @@
 "use server";
 
+import { Redis } from "@upstash/redis";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { processJobExtractionUrl } from "@/lib/job-extraction-url";
 import { isApplicationStatus, normalizeOptionalUrl, requiredText } from "@/lib/validation";
 
 async function requireUser() {
@@ -44,6 +46,26 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
+}
+
+export async function extractApplicationFromUrl(formData: FormData) {
+  await requireUser();
+  const url = requiredText(formData, "url", "Job listing URL");
+  const normalizedUrl = normalizeOptionalUrl(url);
+
+  if (!normalizedUrl) {
+    throw new Error("Enter a valid job listing URL.");
+  }
+
+  const result = await processJobExtractionUrl({
+    rawUrl: normalizedUrl,
+    cache: Redis.fromEnv(),
+  });
+
+  return {
+    url: result.url,
+    data: result.data,
+  };
 }
 
 export async function createApplication(formData: FormData) {

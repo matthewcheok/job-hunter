@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import type { JobExtraction } from "../src/lib/job-extraction";
 import {
+  type ApplicationDraftValues,
+  getExtractedOverwriteFields,
+  isReadableJobListingUrl,
+  mergeExtractedFieldValues,
+  mergeExtractedIntoEmptyFields,
+} from "../src/lib/job-extraction-form";
+import {
   JobExtractionProcessingError,
   type CachedJobExtraction,
   type JobExtractionCacheClient,
@@ -70,6 +77,62 @@ async function testBearerAuth() {
   assert.equal(isValidJobExtractionBearer("Bearer nope", "secret"), false);
   assert.equal(isValidJobExtractionBearer(null, "secret"), false);
   assert.equal(isValidJobExtractionBearer("Bearer secret", undefined), false);
+}
+
+async function testFormUrlValidationAndMerge() {
+  assert.equal(isReadableJobListingUrl("https://example.com/jobs/123"), true);
+  assert.equal(isReadableJobListingUrl("http://example.com/jobs/123"), true);
+  assert.equal(isReadableJobListingUrl("ftp://example.com/jobs/123"), false);
+  assert.equal(isReadableJobListingUrl("not a url"), false);
+
+  const currentValues: ApplicationDraftValues = {
+    job_listing_url: "https://example.com/jobs/123",
+    position: "Typed title",
+    company_name: "",
+    notes: "Typed note",
+    about_role: "",
+    about_company: "",
+    responsibilities: "",
+    requirements: "",
+  };
+  const { mergedValues, filledFields } = mergeExtractedIntoEmptyFields(
+    currentValues,
+    sampleExtraction,
+  );
+
+  assert.equal(mergedValues.position, "Typed title");
+  assert.equal(mergedValues.notes, "Typed note");
+  assert.equal(mergedValues.company_name, sampleExtraction.company_name);
+  assert.deepEqual(filledFields, [
+    "company_name",
+    "about_role",
+    "about_company",
+    "responsibilities",
+    "requirements",
+  ]);
+
+  assert.deepEqual(getExtractedOverwriteFields(currentValues, sampleExtraction), [
+    "position",
+    "notes",
+  ]);
+
+  const overwriteResult = mergeExtractedFieldValues(
+    currentValues,
+    sampleExtraction,
+    { overwriteExisting: true },
+  );
+
+  assert.equal(overwriteResult.mergedValues.position, sampleExtraction.position);
+  assert.equal(overwriteResult.mergedValues.notes, sampleExtraction.notes);
+  assert.deepEqual(overwriteResult.filledFields, [
+    "position",
+    "company_name",
+    "notes",
+    "about_role",
+    "about_company",
+    "responsibilities",
+    "requirements",
+  ]);
 }
 
 async function testCacheHitSkipsPaidWork() {
@@ -165,6 +228,7 @@ async function testFirecrawlWithoutMarkdownFails() {
 async function main() {
   await testUrlNormalization();
   await testBearerAuth();
+  await testFormUrlValidationAndMerge();
   await testCacheHitSkipsPaidWork();
   await testCacheMissStoresExtraction();
   await testFirecrawlWithoutMarkdownFails();

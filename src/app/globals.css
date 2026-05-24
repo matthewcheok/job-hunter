@@ -331,8 +331,11 @@ h1 {
   display: grid;
   gap: 7px;
   color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .application-form input,
@@ -342,12 +345,132 @@ h1 {
   border-radius: 6px;
   background: color-mix(in srgb, var(--surface) 78%, white);
   color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
   outline: none;
 }
 
 .application-form input {
   height: 42px;
   padding: 0 12px;
+}
+
+.url-field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.inline-action-button {
+  min-height: 42px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.form-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-mode-copy {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.readonly-field-group {
+  gap: 5px;
+}
+
+.readonly-field-group .field-label-row {
+  min-height: auto;
+  justify-content: flex-start;
+  color: var(--muted);
+}
+
+.readonly-field {
+  min-height: 0;
+  border: 0;
+  border-left: 3px solid color-mix(in srgb, var(--border) 72%, var(--applied));
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 2px 0 2px 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.readonly-field p,
+.readonly-field ul,
+.readonly-field ol {
+  margin: 0;
+}
+
+.readonly-field p + p,
+.readonly-field p + ul,
+.readonly-field p + ol,
+.readonly-field ul + p,
+.readonly-field ol + p,
+.readonly-field ul + ul,
+.readonly-field ol + ol {
+  margin-top: 8px;
+}
+
+.readonly-field ul,
+.readonly-field ol {
+  padding-left: 20px;
+  white-space: normal;
+}
+
+.readonly-field ul {
+  list-style: disc;
+}
+
+.readonly-field ol {
+  list-style: decimal;
+}
+
+.readonly-field li {
+  padding-left: 2px;
+}
+
+.readonly-field li + li {
+  margin-top: 5px;
+}
+
+.readonly-field.empty {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.readonly-link {
+  display: block;
+  color: var(--applied);
+  text-decoration: none;
+}
+
+.readonly-link:hover {
+  border-left-color: var(--applied);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
 }
 
 .application-form textarea {
@@ -584,6 +707,7 @@ h1 {
 
 .field-save-status {
   display: inline-flex;
+  max-width: min(300px, 58%);
   min-height: 20px;
   align-items: center;
   gap: 4px;
@@ -593,6 +717,11 @@ h1 {
   font-size: 0.68rem;
   font-weight: 750;
   white-space: nowrap;
+}
+
+.field-save-status span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pane-content,
@@ -685,7 +814,12 @@ h1 {
 
 .timeline h3 {
   margin-bottom: 0;
-  font-size: 0.9rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .timeline ol {

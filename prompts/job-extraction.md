@@ -12,9 +12,10 @@ Use these fields:
 - `about_company`: company information, mission, product, market, funding,
   team context, or other company background.
 - `responsibilities`: what the person will do, own, operate, manage, or deliver.
+  Prefer a markdown bulleted list, with one responsibility per line.
 - `requirements`: required and preferred qualifications, skills, experience,
   tools, and eligibility from a real job qualifications or requirements
-  section.
+  section. Prefer a markdown bulleted list, with one requirement per line.
 - `notes`: a compact catch-all for details that do not belong cleanly in the
   fields above, such as location, remote/hybrid/in-office expectations, salary,
   employment type, working hours, benefits, visa support, language requirements,
@@ -37,5 +38,8 @@ Rules:
   `notes`, not in `requirements`.
 - Only fill `requirements` when the primary listing includes actual candidate
   requirements, qualifications, preferred qualifications, skills, or experience.
+- When `responsibilities` or `requirements` contain multiple points, format each
+  point as `- ...`. Do not use paragraphs separated only by semicolons for
+  these two fields.
 - If the markdown contains related jobs or job cards for other companies, ignore
   them completely.
